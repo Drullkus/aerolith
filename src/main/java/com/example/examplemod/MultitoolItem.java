@@ -138,11 +138,4 @@ public class MultitoolItem extends Item {
     public static float getExhaustionStatic(ItemStack stack, long gameTime, float deltaTime) {
         return stack.getItem() instanceof MultitoolItem item ? item.getExhaustion(stack, gameTime, deltaTime) : 0f;
     }
-
-    @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-        if (isSelected && slotId == 0 && level.isClientSide && entity instanceof Player player) {
-            player.displayClientMessage(Component.literal("%.02f".formatted(this.getExhaustion(stack, level.getGameTime(), 0f))), true);
-        }
-    }
 }
