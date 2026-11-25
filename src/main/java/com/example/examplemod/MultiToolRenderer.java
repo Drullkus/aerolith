@@ -20,6 +20,8 @@ public class MultiToolRenderer extends BlockEntityWithoutLevelRenderer {
 
     @Override
     public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
+        if (!stack.getOrDefault(ExampleMod.LASER_ACTIVE, false)) return;
+
         poseStack.pushPose();
 
         poseStack.mulPose(Axis.XN.rotationDegrees(90));

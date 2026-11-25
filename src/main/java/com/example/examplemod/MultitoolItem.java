@@ -41,6 +41,7 @@ public class MultitoolItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         ItemStack itemstack = player.getItemInHand(usedHand);
         player.startUsingItem(usedHand);
+        itemstack.set(ExampleMod.LASER_ACTIVE, true);
         return InteractionResultHolder.consume(itemstack);
     }
 
@@ -57,6 +58,17 @@ public class MultitoolItem extends Item {
         BlockState blockParticle = nearestHit instanceof BlockHitResult blockHitResult ? level.getBlockState(blockHitResult.getBlockPos()) : Blocks.RED_STAINED_GLASS.defaultBlockState();
 
         level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockParticle), particlePos.x, particlePos.y, particlePos.z, 0, 0, 0);
+
+        if (nearestHit instanceof BlockHitResult blockHitResult) {
+            level.destroyBlock(blockHitResult.getBlockPos(), true, wielder);
+        }
+    }
+
+    @Override
+    public void onStopUsing(ItemStack stack, LivingEntity entity, int count) {
+        super.onStopUsing(stack, entity, count);
+
+        stack.set(ExampleMod.LASER_ACTIVE, false);
     }
 
     private HitResult getNearestHit(LivingEntity wielder) {
