@@ -2,6 +2,7 @@ package com.example.examplemod;
 
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.registries.*;
 import org.joml.Vector3f;
@@ -114,5 +115,9 @@ public class ExampleMod {
     public void onServerStarting(ServerStartingEvent event) {
         // Do something when the server starts
         LOGGER.info("HELLO from server starting");
+    }
+
+    public static ResourceLocation modid(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }
 }

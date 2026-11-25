@@ -7,6 +7,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
@@ -33,6 +34,11 @@ public class ExampleModClient {
     @SubscribeEvent
     static void registerClientExtensions(RegisterClientExtensionsEvent event) {
         event.registerItem(new MultitoolClientExtensions(), ExampleMod.EXAMPLE_ITEM);
+    }
+
+    @SubscribeEvent
+    static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
+        event.register(MultiToolRenderer.MATTER_MANIPULATOR_MODEL);
     }
 
 }

@@ -18,7 +18,7 @@ import org.joml.Vector3f;
 
 public class MultitoolItem extends Item {
 
-    private final int hitDistance;
+    public final int hitDistance;
     private final int useDurationTicks;
 
     public MultitoolItem(Properties properties) {
@@ -94,5 +94,10 @@ public class MultitoolItem extends Item {
         double entityRayLength = entityCastResult.getLocation().subtract(eyePosition).length();
 
         return entityRayLength < blockRayLength ? entityCastResult : levelPick;
+    }
+
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        return slotChanged || !ItemStack.isSameItem(oldStack, newStack);
     }
 }
