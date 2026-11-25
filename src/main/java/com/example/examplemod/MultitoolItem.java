@@ -2,9 +2,11 @@ package com.example.examplemod;
 
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
@@ -48,7 +50,12 @@ public class MultitoolItem extends Item {
         ItemStack itemstack = player.getItemInHand(usedHand);
         player.startUsingItem(usedHand);
         itemstack.set(ExampleMod.LASER_HIT, this.getNearestHit(player).getLocation().toVector3f());
-        itemstack.set(ExampleMod.LASER_START_TIME, level.getGameTime());
+
+        float heatPenalty = this.getExhaustion(itemstack, level.getGameTime(), 0f); // Didn't wait for cooldown to finish
+        int tickPenalty = Mth.ceil(Math.clamp(heatPenalty, 0L, 1L) * this.ticksBeforeOverheat);
+
+        itemstack.set(ExampleMod.LASER_START_TIME, level.getGameTime() - tickPenalty);
+        itemstack.remove(ExampleMod.LASER_COOLDOWN);
         return InteractionResultHolder.consume(itemstack);
     }
 
@@ -83,13 +90,9 @@ public class MultitoolItem extends Item {
     }
 
     @Override
-    public void onStopUsing(ItemStack stack, LivingEntity entity, int count) {
-        super.onStopUsing(stack, entity, count);
+    public void onStopUsing(ItemStack stack, LivingEntity entity, int useDurationTicks) {
+        stack.set(ExampleMod.LASER_COOLDOWN, new LaserCooldown(stack, entity.level()));
 
-        this.removeLaserData(stack);
-    }
-
-    private void removeLaserData(ItemStack stack) {
         stack.remove(ExampleMod.LASER_HIT);
         stack.remove(ExampleMod.LASER_START_TIME);
     }
@@ -118,13 +121,28 @@ public class MultitoolItem extends Item {
     }
 
     public float getExhaustion(ItemStack stack, long gameTime, float deltaTime) {
+        if (stack.has(ExampleMod.LASER_COOLDOWN)) {
+            LaserCooldown laserCooldown = stack.get(ExampleMod.LASER_COOLDOWN);
+            long timeSinceCoolingStart = gameTime - laserCooldown.cooldownStart();
+            float percentCooled = (timeSinceCoolingStart - deltaTime) / this.ticksBeforeOverheat;
+            float ret = laserCooldown.initialHeatLevel() - percentCooled;
+            return Mth.clamp(ret, 0, 1);
+        }
+
         if (!stack.has(ExampleMod.LASER_START_TIME)) return 0;
 
-        long timeSinceStart = gameTime - stack.getOrDefault(ExampleMod.LASER_START_TIME, gameTime);
-        return Mth.clamp((timeSinceStart + deltaTime) / this.ticksBeforeOverheat, 0, 1);
+        long timeSinceLaserStart = gameTime - stack.getOrDefault(ExampleMod.LASER_START_TIME, gameTime);
+        return Mth.clamp((timeSinceLaserStart + deltaTime) / this.ticksBeforeOverheat, 0, 1);
     }
 
     public static float getExhaustionStatic(ItemStack stack, long gameTime, float deltaTime) {
         return stack.getItem() instanceof MultitoolItem item ? item.getExhaustion(stack, gameTime, deltaTime) : 0f;
+    }
+
+    @Override
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+        if (isSelected && slotId == 0 && level.isClientSide && entity instanceof Player player) {
+            player.displayClientMessage(Component.literal("%.02f".formatted(this.getExhaustion(stack, level.getGameTime(), 0f))), true);
+        }
     }
 }

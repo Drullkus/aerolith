@@ -65,6 +65,7 @@ public class ExampleMod {
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Vector3f>> LASER_HIT = DATA_COMPONENTS.register("laser_hit", () -> DataComponentType.<Vector3f>builder().persistent(ExtraCodecs.VECTOR3F).networkSynchronized(ByteBufCodecs.VECTOR3F).build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> LASER_START_TIME = DATA_COMPONENTS.register("laser_heat", () -> DataComponentType.<Long>builder().persistent(Util.longRange(0, Long.MAX_VALUE)).networkSynchronized(ByteBufCodecs.VAR_LONG).build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<LaserCooldown>> LASER_COOLDOWN = DATA_COMPONENTS.register("laser_cooldown", () -> DataComponentType.<LaserCooldown>builder().persistent(LaserCooldown.CODEC).networkSynchronized(LaserCooldown.STREAM_CODEC).build());
 
     // The constructor for the mod class is the first code that is run when your mod is loaded.
     // FML will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
