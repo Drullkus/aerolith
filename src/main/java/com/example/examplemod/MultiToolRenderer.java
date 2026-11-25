@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BeaconRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -28,11 +29,7 @@ public class MultiToolRenderer extends BlockEntityWithoutLevelRenderer {
 
     @Override
     public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-        poseStack.pushPose();
-        poseStack.translate(0.5, 0.5, 0.5);
-        BakedModel model = Minecraft.getInstance().getModelManager().getModel(MATTER_MANIPULATOR_MODEL);
-        Minecraft.getInstance().getItemRenderer().render(stack, displayContext, false, poseStack, buffer, packedLight, packedOverlay, model);
-        poseStack.popPose();
+        this.renderToolModel(stack, displayContext, poseStack, buffer, packedLight, packedOverlay);
 
         if (!ALLOWED_TRANSFORMS.contains(displayContext)) return;
         if (!stack.has(ExampleMod.LASER_HIT)) return;
@@ -58,4 +55,15 @@ public class MultiToolRenderer extends BlockEntityWithoutLevelRenderer {
 
         poseStack.popPose();
     }
+
+    private void renderToolModel(ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
+        poseStack.pushPose();
+        poseStack.translate(0.5, 0.5, 0.5);
+
+        BakedModel model = Minecraft.getInstance().getModelManager().getModel(MATTER_MANIPULATOR_MODEL);
+
+        Minecraft.getInstance().getItemRenderer().render(stack, displayContext, false, poseStack, buffer, packedLight, packedOverlay, model);
+        poseStack.popPose();
+    }
+
 }

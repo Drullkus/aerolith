@@ -1,60 +1,125 @@
 {
-	"format_version": "26.3",
-	"credit": "Made with Blockbench",
-	"textures": {
-		"0": "examplemod:item/matter_manipulator",
-		"particle": "examplemod:item/matter_manipulator"
-	},
-	"elements": [
-		{
-			"from": [7, 4, 9],
-			"to": [9, 8, 11],
-			"rotation": {"angle": 0, "axis": "y", "origin": [14, 4, 16]},
-			"faces": {
-				"north": {"uv": [0, 0, 2, 4], "texture": "#0"},
-				"east": {"uv": [0, 0, 2, 4], "texture": "#0"},
-				"south": {"uv": [0, 0, 2, 4], "texture": "#0"},
-				"west": {"uv": [0, 0, 2, 4], "texture": "#0"}
-			}
+	"loader": "neoforge:composite",
+	"children": {
+		"diffuse": {
+			"format_version": "26.3",
+			"credit": "Made with Blockbench",
+			"render_type": "minecraft:cutout",
+			"textures": {
+				"0": "examplemod:item/matter_manipulator",
+				"particle": "examplemod:item/matter_manipulator"
+			},
+			"elements": [
+				{
+					"from": [7, 4, 9],
+					"to": [9, 8, 11],
+					"rotation": {"angle": 0, "axis": "y", "origin": [14, 4, 16]},
+					"faces": {
+						"north": {"uv": [0, 0, 2, 4], "texture": "#0"},
+						"east": {"uv": [0, 0, 2, 4], "texture": "#0"},
+						"south": {"uv": [0, 0, 2, 4], "texture": "#0"},
+						"west": {"uv": [0, 0, 2, 4], "texture": "#0"}
+					}
+				},
+				{
+					"from": [6.5, 1, 2],
+					"to": [9.5, 4, 12],
+					"rotation": {"angle": 0, "axis": "y", "origin": [7.5, 1, 9.5]},
+					"faces": {
+						"north": {"uv": [3, 3, 6, 6], "texture": "#0"},
+						"east": {"uv": [6, 3, 16, 6], "texture": "#0"},
+						"south": {"uv": [3, 3, 6, 6], "texture": "#0"},
+						"west": {"uv": [6, 3, 16, 6], "texture": "#0"},
+						"up": {"uv": [6, 6, 16, 9], "rotation": 90, "texture": "#0"},
+						"down": {"uv": [6, 0, 16, 3], "rotation": 90, "texture": "#0"}
+					}
+				},
+				{
+					"from": [6.5, 8, 2],
+					"to": [9.5, 11, 12],
+					"rotation": {"angle": 0, "axis": "y", "origin": [7.5, 8, 9.5]},
+					"faces": {
+						"north": {"uv": [3, 3, 6, 6], "texture": "#0"},
+						"east": {"uv": [6, 3, 16, 6], "texture": "#0"},
+						"south": {"uv": [3, 3, 6, 6], "texture": "#0"},
+						"west": {"uv": [6, 3, 16, 6], "texture": "#0"},
+						"up": {"uv": [6, 0, 16, 3], "rotation": 270, "texture": "#0"},
+						"down": {"uv": [6, 6, 16, 9], "rotation": 270, "texture": "#0"}
+					}
+				},
+				{
+					"from": [6.5, 4, 3],
+					"to": [9.5, 8, 7],
+					"rotation": {"angle": 0, "axis": "y", "origin": [6.5, 4, 3]},
+					"faces": {
+						"north": {"uv": [6, 10, 9, 14], "texture": "#0"},
+						"east": {"uv": [9, 10, 13, 14], "texture": "#0"},
+						"south": {"uv": [13, 10, 16, 14], "texture": "#0"},
+						"west": {"uv": [9, 10, 13, 14], "texture": "#0"}
+					}
+				}
+			]
 		},
-		{
-			"from": [6.5, 1, 2],
-			"to": [9.5, 4, 12],
-			"rotation": {"angle": 0, "axis": "y", "origin": [7.5, 1, 9.5]},
-			"faces": {
-				"north": {"uv": [3, 3, 6, 6], "texture": "#0"},
-				"east": {"uv": [6, 3, 16, 6], "texture": "#0"},
-				"south": {"uv": [3, 3, 6, 6], "texture": "#0"},
-				"west": {"uv": [6, 3, 16, 6], "texture": "#0"},
-				"up": {"uv": [6, 6, 16, 9], "rotation": 90, "texture": "#0"},
-				"down": {"uv": [6, 0, 16, 3], "rotation": 90, "texture": "#0"}
-			}
-		},
-		{
-			"from": [6.5, 8, 2],
-			"to": [9.5, 11, 12],
-			"rotation": {"angle": 0, "axis": "y", "origin": [7.5, 8, 9.5]},
-			"faces": {
-				"north": {"uv": [3, 3, 6, 6], "texture": "#0"},
-				"east": {"uv": [6, 3, 16, 6], "texture": "#0"},
-				"south": {"uv": [3, 3, 6, 6], "texture": "#0"},
-				"west": {"uv": [6, 3, 16, 6], "texture": "#0"},
-				"up": {"uv": [6, 0, 16, 3], "rotation": 270, "texture": "#0"},
-				"down": {"uv": [6, 6, 16, 9], "rotation": 270, "texture": "#0"}
-			}
-		},
-		{
-			"from": [6.5, 4, 3],
-			"to": [9.5, 8, 7],
-			"rotation": {"angle": 0, "axis": "y", "origin": [6.5, 4, 3]},
-			"faces": {
-				"north": {"uv": [6, 10, 9, 14], "texture": "#0"},
-				"east": {"uv": [9, 10, 13, 14], "texture": "#0"},
-				"south": {"uv": [13, 10, 16, 14], "texture": "#0"},
-				"west": {"uv": [9, 10, 13, 14], "texture": "#0"}
-			}
+		"effect": {
+			"format_version": "26.3",
+			"credit": "Made with Blockbench",
+			"render_type": "minecraft:cutout",
+			"textures": {
+				"1": "examplemod:item/matter_manipulator_shader",
+				"particle": "examplemod:item/matter_manipulator"
+			},
+			"elements": [
+				{
+					"from": [7, 4, 9],
+					"to": [9, 8, 11],
+					"rotation": {"angle": 0, "axis": "y", "origin": [14, 4, 16]},
+					"faces": {
+						"north": {"uv": [0, 0, 2, 4], "texture": "#1"},
+						"east": {"uv": [0, 0, 2, 4], "texture": "#1"},
+						"south": {"uv": [0, 0, 2, 4], "texture": "#1"},
+						"west": {"uv": [0, 0, 2, 4], "texture": "#1"}
+					}
+				},
+				{
+					"from": [6.5, 1, 2],
+					"to": [9.5, 4, 12],
+					"rotation": {"angle": 0, "axis": "y", "origin": [7.5, 1, 9.5]},
+					"faces": {
+						"north": {"uv": [3, 3, 6, 6], "texture": "#1"},
+						"east": {"uv": [6, 3, 16, 6], "texture": "#1"},
+						"south": {"uv": [3, 3, 6, 6], "texture": "#1"},
+						"west": {"uv": [6, 3, 16, 6], "texture": "#1"},
+						"up": {"uv": [6, 6, 16, 9], "rotation": 90, "texture": "#1"},
+						"down": {"uv": [6, 0, 16, 3], "rotation": 90, "texture": "#1"}
+					}
+				},
+				{
+					"from": [6.5, 8, 2],
+					"to": [9.5, 11, 12],
+					"rotation": {"angle": 0, "axis": "y", "origin": [7.5, 8, 9.5]},
+					"faces": {
+						"north": {"uv": [3, 3, 6, 6], "texture": "#1"},
+						"east": {"uv": [6, 3, 16, 6], "texture": "#1"},
+						"south": {"uv": [3, 3, 6, 6], "texture": "#1"},
+						"west": {"uv": [6, 3, 16, 6], "texture": "#1"},
+						"up": {"uv": [6, 0, 16, 3], "rotation": 270, "texture": "#1"},
+						"down": {"uv": [6, 6, 16, 9], "rotation": 270, "texture": "#1"}
+					}
+				},
+				{
+					"from": [6.5, 4, 3],
+					"to": [9.5, 8, 7],
+					"rotation": {"angle": 0, "axis": "y", "origin": [6.5, 4, 3]},
+					"faces": {
+						"north": {"uv": [6, 10, 9, 14], "texture": "#1"},
+						"east": {"uv": [9, 10, 13, 14], "texture": "#1"},
+						"south": {"uv": [13, 10, 16, 14], "texture": "#1"},
+						"west": {"uv": [9, 10, 13, 14], "texture": "#1"}
+					}
+				}
+			]
 		}
-	],
+	},
 	"display": {
 		"ground": {
 			"translation": [0, 2, 0],
