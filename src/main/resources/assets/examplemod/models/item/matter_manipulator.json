@@ -63,7 +63,7 @@
 		"effect": {
 			"format_version": "26.3",
 			"credit": "Made with Blockbench",
-			"render_type": "minecraft:cutout",
+			"render_type": "examplemod:multitool/matter_manipulator",
 			"textures": {
 				"1": "examplemod:item/matter_manipulator_shader",
 				"particle": "examplemod:item/matter_manipulator"

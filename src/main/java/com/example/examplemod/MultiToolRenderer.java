@@ -5,7 +5,9 @@ import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BeaconRenderer;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Direction;
@@ -13,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.client.ClientHooks;
 
 import java.util.Set;
 
@@ -22,6 +25,7 @@ public class MultiToolRenderer extends BlockEntityWithoutLevelRenderer {
     private static final ResourceLocation BEAM_LOCATION = ResourceLocation.withDefaultNamespace("textures/entity/beacon_beam.png");
 
     private static final Set<ItemDisplayContext> ALLOWED_TRANSFORMS = Set.of(ItemDisplayContext.FIRST_PERSON_LEFT_HAND, ItemDisplayContext.FIRST_PERSON_RIGHT_HAND, ItemDisplayContext.THIRD_PERSON_LEFT_HAND, ItemDisplayContext.THIRD_PERSON_RIGHT_HAND);
+    private static final Set<ItemDisplayContext> LEFT_HANDED = Set.of(ItemDisplayContext.FIRST_PERSON_LEFT_HAND, ItemDisplayContext.THIRD_PERSON_LEFT_HAND);
 
     public MultiToolRenderer() {
         super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
@@ -60,9 +64,18 @@ public class MultiToolRenderer extends BlockEntityWithoutLevelRenderer {
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
 
-        BakedModel model = Minecraft.getInstance().getModelManager().getModel(MATTER_MANIPULATOR_MODEL);
+        Minecraft instance = Minecraft.getInstance();
+        ItemRenderer itemRenderer = instance.getItemRenderer();
+        BakedModel loadedModel = instance.getModelManager().getModel(MATTER_MANIPULATOR_MODEL);
+        // BakedModel posedModel = ClientHooks.handleCameraTransforms(poseStack, loadedModel, displayContext, true);
 
-        Minecraft.getInstance().getItemRenderer().render(stack, displayContext, false, poseStack, buffer, packedLight, packedOverlay, model);
+        // for (BakedModel pass : model.getRenderPasses(stack, true)) {
+        //     for (RenderType renderType : pass.getRenderTypes(stack, true)) {
+        //         itemRenderer.renderModelLists(pass, stack, packedLight, packedOverlay, poseStack, buffer.getBuffer(renderType));
+        //     }
+        // }
+
+        itemRenderer.render(stack, displayContext, false, poseStack, buffer, packedLight, packedOverlay, loadedModel);
         poseStack.popPose();
     }
 
