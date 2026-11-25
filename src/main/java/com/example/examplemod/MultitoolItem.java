@@ -59,7 +59,7 @@ public class MultitoolItem extends Item {
 
         level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockParticle), particlePos.x, particlePos.y, particlePos.z, 0, 0, 0);
 
-        if (nearestHit instanceof BlockHitResult blockHitResult) {
+        if (!level.isClientSide && nearestHit instanceof BlockHitResult blockHitResult) {
             level.destroyBlock(blockHitResult.getBlockPos(), true, wielder);
         }
     }
