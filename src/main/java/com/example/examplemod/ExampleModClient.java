@@ -7,6 +7,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
@@ -28,4 +29,10 @@ public class ExampleModClient {
         ExampleMod.LOGGER.info("HELLO FROM CLIENT SETUP");
         ExampleMod.LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
     }
+
+    @SubscribeEvent
+    static void registerClientExtensions(RegisterClientExtensionsEvent event) {
+        event.registerItem(new MultitoolClientExtensions(), ExampleMod.EXAMPLE_ITEM);
+    }
+
 }
