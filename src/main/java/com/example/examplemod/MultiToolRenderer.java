@@ -5,17 +5,14 @@ import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BeaconRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.ClientHooks;
 
 import java.util.Set;
 
@@ -33,7 +30,12 @@ public class MultiToolRenderer extends BlockEntityWithoutLevelRenderer {
 
     @Override
     public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-        this.renderToolModel(stack, displayContext, poseStack, buffer, packedLight, packedOverlay);
+        float gameTimeDeltaTicks = Minecraft.getInstance().getTimer().getGameTimeDeltaTicks();
+        long gameTime = Minecraft.getInstance().level.getGameTime();
+
+        float heatLevel = MultitoolItem.getExhaustionStatic(stack, gameTime, gameTimeDeltaTicks);
+
+        this.renderToolModel(stack, displayContext, poseStack, buffer, packedLight, packedOverlay, heatLevel);
 
         if (!ALLOWED_TRANSFORMS.contains(displayContext)) return;
         if (!stack.has(ExampleMod.LASER_HIT)) return;
@@ -42,14 +44,13 @@ public class MultiToolRenderer extends BlockEntityWithoutLevelRenderer {
 
         poseStack.mulPose(Axis.XN.rotation(Mth.HALF_PI));
         poseStack.translate(0, -1/4d, -3/32d);
-
         BeaconRenderer.renderBeaconBeam(
                 poseStack,
                 buffer,
                 BEAM_LOCATION,
-                Minecraft.getInstance().getTimer().getGameTimeDeltaTicks(),
+                gameTimeDeltaTicks,
                 1,
-                Minecraft.getInstance().level.getGameTime(),
+                gameTime,
                 0,
                 128,
                 0xff_00_00,
@@ -60,23 +61,23 @@ public class MultiToolRenderer extends BlockEntityWithoutLevelRenderer {
         poseStack.popPose();
     }
 
-    private void renderToolModel(ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
+    private void renderToolModel(ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, float heatLevel) {
+        ExampleModClient.setLaserHeatUniform(heatLevel);
+
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
 
         Minecraft instance = Minecraft.getInstance();
         ItemRenderer itemRenderer = instance.getItemRenderer();
         BakedModel loadedModel = instance.getModelManager().getModel(MATTER_MANIPULATOR_MODEL);
-        // BakedModel posedModel = ClientHooks.handleCameraTransforms(poseStack, loadedModel, displayContext, true);
 
-        // for (BakedModel pass : model.getRenderPasses(stack, true)) {
-        //     for (RenderType renderType : pass.getRenderTypes(stack, true)) {
-        //         itemRenderer.renderModelLists(pass, stack, packedLight, packedOverlay, poseStack, buffer.getBuffer(renderType));
-        //     }
-        // }
+        itemRenderer.render(stack, displayContext, LEFT_HANDED.contains(displayContext), poseStack, buffer, packedLight, packedOverlay, loadedModel);
 
-        itemRenderer.render(stack, displayContext, false, poseStack, buffer, packedLight, packedOverlay, loadedModel);
         poseStack.popPose();
+
+        if (buffer instanceof MultiBufferSource.BufferSource bufferSource) {
+            // bufferSource.endLastBatch(); // Draw immediate, before uniforms get re-written
+        }
     }
 
 }

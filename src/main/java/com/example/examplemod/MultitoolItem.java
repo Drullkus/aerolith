@@ -2,6 +2,7 @@ package com.example.examplemod;
 
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,7 +26,8 @@ public class MultitoolItem extends Item {
         super(properties);
 
         this.hitDistance = 32;
-        this.useDurationTicks = 72000;
+        int useSeconds = 5;
+        this.useDurationTicks = useSeconds * 20;
     }
 
     @Override
@@ -43,6 +45,7 @@ public class MultitoolItem extends Item {
         ItemStack itemstack = player.getItemInHand(usedHand);
         player.startUsingItem(usedHand);
         itemstack.set(ExampleMod.LASER_HIT, this.getNearestHit(player).getLocation().toVector3f());
+        itemstack.set(ExampleMod.LASER_START_TIME, level.getGameTime());
         return InteractionResultHolder.consume(itemstack);
     }
 
@@ -76,6 +79,7 @@ public class MultitoolItem extends Item {
         super.onStopUsing(stack, entity, count);
 
         stack.remove(ExampleMod.LASER_HIT);
+        stack.remove(ExampleMod.LASER_START_TIME);
     }
 
     private HitResult getNearestHit(LivingEntity wielder) {
@@ -85,7 +89,7 @@ public class MultitoolItem extends Item {
         Vec3 stopPos = wielder.getLookAngle().scale(hitDistance).add(eyePosition);
         AABB scanBox = new AABB(eyePosition, stopPos);
 
-        EntityHitResult entityCastResult = ProjectileUtil.getEntityHitResult(wielder, eyePosition, stopPos, scanBox, e -> true, hitDistance);
+        EntityHitResult entityCastResult = ProjectileUtil.getEntityHitResult(wielder, eyePosition, stopPos, scanBox, e -> !e.isSpectator() && e.isPickable(), hitDistance);
         if (entityCastResult == null) {
             return levelPick;
         }
@@ -99,5 +103,16 @@ public class MultitoolItem extends Item {
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return slotChanged || !ItemStack.isSameItem(oldStack, newStack);
+    }
+
+    public float getExhaustion(ItemStack stack, long gameTime, float deltaTime) {
+        if (!stack.has(ExampleMod.LASER_START_TIME)) return 0;
+
+        long timeSinceStart = gameTime - stack.getOrDefault(ExampleMod.LASER_START_TIME, gameTime);
+        return Mth.clamp((timeSinceStart + deltaTime) / this.useDurationTicks, 0, 1);
+    }
+
+    public static float getExhaustionStatic(ItemStack stack, long gameTime, float deltaTime) {
+        return stack.getItem() instanceof MultitoolItem item ? item.getExhaustion(stack, gameTime, deltaTime) : 0f;
     }
 }

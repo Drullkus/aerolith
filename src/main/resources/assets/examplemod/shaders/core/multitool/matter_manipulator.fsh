@@ -10,6 +10,7 @@ uniform float FogEnd;
 uniform vec4 FogColor;
 uniform float GameTime;
 uniform vec2 ScreenSize;
+uniform float LaserHeat;
 
 uniform mat4 ProjMat;
 
@@ -206,18 +207,19 @@ void main() {
 
     // Two fractial simplex noises
     vec2 sNoise2D = vec2(
-            fbmNoise4D(noisePos - vec3(100.0), seconds),
-            fbmNoise4D(noisePos + vec3(100.0), seconds)
+            fbmNoise4D(noisePos - vec3(100.0), seconds * 0.5),
+            fbmNoise4D(noisePos + vec3(100.0), seconds * 0.5)
     );
 
     // Arctangent of two noises makes a pseudorandom field of random angles. There are discontinuties at centers of each vortex.
     float angle = atan(sNoise2D.y, sNoise2D.x);
     // Convert angle's [-pi, pi] into hue's [0, 1] range
     float hue = angle * M_1_PI * 0.5 + 0.5;
-    vec3 converted = hue2rgb(hue);
+    vec3 hueColor = hue2rgb(hue);
 
     color *= vertexColor * ColorModulator;
     color.rgb = mix(overlayColor.rgb, color.rgb, overlayColor.a);
     color *= lightMapColor;
-    fragColor = vec4(mix(linear_fog(color, vertexDistance, FogStart, FogEnd, FogColor).rgb * 0.25, converted * vec3(1.0, 0.5, 0.5), converted.r * 0.5 + 0.5), 1.0);
+    vec3 modelColor = linear_fog(color, vertexDistance, FogStart, FogEnd, FogColor).rgb;
+    fragColor = vec4(mix(modelColor * 0.25, hueColor * vec3(1.0, LaserHeat, LaserHeat), 0.9), 1.0);
 }

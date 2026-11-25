@@ -1,5 +1,6 @@
 package com.example.examplemod;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceLocation;
@@ -63,6 +64,7 @@ public class ExampleMod {
             }).build());
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Vector3f>> LASER_HIT = DATA_COMPONENTS.register("laser_hit", () -> DataComponentType.<Vector3f>builder().persistent(ExtraCodecs.VECTOR3F).networkSynchronized(ByteBufCodecs.VECTOR3F).build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> LASER_START_TIME = DATA_COMPONENTS.register("laser_heat", () -> DataComponentType.<Long>builder().persistent(Util.longRange(0, Long.MAX_VALUE)).networkSynchronized(ByteBufCodecs.VAR_LONG).build());
 
     // The constructor for the mod class is the first code that is run when your mod is loaded.
     // FML will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.

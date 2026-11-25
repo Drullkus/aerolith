@@ -84,4 +84,8 @@ public class ExampleModClient {
         event.register(MATTER_MANIPULATOR_RL, RenderType.CUTOUT, MATTER_MANIPULATOR_RENDER_TYPE);
     }
 
+    public static void setLaserHeatUniform(float laserHeat) {
+        matterManipulatorAdditionalLayer.getUniform("LaserHeat").set(1f - laserHeat);
+    }
+
 }
