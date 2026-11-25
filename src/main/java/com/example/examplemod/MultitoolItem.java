@@ -21,13 +21,16 @@ public class MultitoolItem extends Item {
 
     public final int hitDistance;
     private final int useDurationTicks;
+    private final int ticksBeforeOverheat;
 
     public MultitoolItem(Properties properties) {
         super(properties);
 
+        this.useDurationTicks = 72000;
+
         this.hitDistance = 32;
         int useSeconds = 5;
-        this.useDurationTicks = useSeconds * 20;
+        this.ticksBeforeOverheat = useSeconds * 20;
     }
 
     @Override
@@ -51,6 +54,11 @@ public class MultitoolItem extends Item {
 
     @Override
     public void onUseTick(Level level, LivingEntity wielder, ItemStack stack, int remainingUseDuration) {
+        if (this.getExhaustion(stack, level.getGameTime(), 0f) >= 1) {
+            if (!level.isClientSide) stack.remove(ExampleMod.LASER_HIT);
+            return;
+        }
+
         HitResult nearestHit = this.getNearestHit(wielder);
 
         if (nearestHit.getType() == HitResult.Type.MISS) return;
@@ -78,6 +86,10 @@ public class MultitoolItem extends Item {
     public void onStopUsing(ItemStack stack, LivingEntity entity, int count) {
         super.onStopUsing(stack, entity, count);
 
+        this.removeLaserData(stack);
+    }
+
+    private void removeLaserData(ItemStack stack) {
         stack.remove(ExampleMod.LASER_HIT);
         stack.remove(ExampleMod.LASER_START_TIME);
     }
@@ -109,7 +121,7 @@ public class MultitoolItem extends Item {
         if (!stack.has(ExampleMod.LASER_START_TIME)) return 0;
 
         long timeSinceStart = gameTime - stack.getOrDefault(ExampleMod.LASER_START_TIME, gameTime);
-        return Mth.clamp((timeSinceStart + deltaTime) / this.useDurationTicks, 0, 1);
+        return Mth.clamp((timeSinceStart + deltaTime) / this.ticksBeforeOverheat, 0, 1);
     }
 
     public static float getExhaustionStatic(ItemStack stack, long gameTime, float deltaTime) {

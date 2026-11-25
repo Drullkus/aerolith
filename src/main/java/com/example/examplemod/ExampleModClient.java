@@ -85,7 +85,7 @@ public class ExampleModClient {
     }
 
     public static void setLaserHeatUniform(float laserHeat) {
-        matterManipulatorAdditionalLayer.getUniform("LaserHeat").set(1f - laserHeat);
+        matterManipulatorAdditionalLayer.getUniform("LaserHeat").set(laserHeat);
     }
 
 }

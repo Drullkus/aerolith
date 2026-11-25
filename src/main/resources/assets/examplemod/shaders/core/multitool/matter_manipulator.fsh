@@ -221,5 +221,5 @@ void main() {
     color.rgb = mix(overlayColor.rgb, color.rgb, overlayColor.a);
     color *= lightMapColor;
     vec3 modelColor = linear_fog(color, vertexDistance, FogStart, FogEnd, FogColor).rgb;
-    fragColor = vec4(mix(modelColor * 0.25, hueColor * vec3(1.0, LaserHeat, LaserHeat), 0.9), 1.0);
+    fragColor = vec4(mix(modelColor * 0.25, hueColor + mix(vec3(0.0), vec3(2.0, 0.0, -1.0), LaserHeat), 0.9), 1.0);
 }
