@@ -14,6 +14,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.*;
+import org.joml.Vector3f;
 
 public class MultitoolItem extends Item {
 
@@ -41,7 +42,7 @@ public class MultitoolItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         ItemStack itemstack = player.getItemInHand(usedHand);
         player.startUsingItem(usedHand);
-        itemstack.set(ExampleMod.LASER_ACTIVE, true);
+        itemstack.set(ExampleMod.LASER_HIT, this.getNearestHit(player).getLocation().toVector3f());
         return InteractionResultHolder.consume(itemstack);
     }
 
@@ -49,18 +50,24 @@ public class MultitoolItem extends Item {
     public void onUseTick(Level level, LivingEntity wielder, ItemStack stack, int remainingUseDuration) {
         HitResult nearestHit = this.getNearestHit(wielder);
 
-        if (nearestHit.getType() == HitResult.Type.MISS) {
-            return;
-        }
+        if (nearestHit.getType() == HitResult.Type.MISS) return;
 
-        Vec3 particlePos = nearestHit.getLocation().add(wielder.getLookAngle().scale(-0.0125f));
+        Vec3 hitLocation = nearestHit.getLocation();
 
-        BlockState blockParticle = nearestHit instanceof BlockHitResult blockHitResult ? level.getBlockState(blockHitResult.getBlockPos()) : Blocks.RED_STAINED_GLASS.defaultBlockState();
+        if (level.isClientSide) {
+            BlockState blockParticle = nearestHit instanceof BlockHitResult blockHitResult ? level.getBlockState(blockHitResult.getBlockPos()) : Blocks.RED_STAINED_GLASS.defaultBlockState();
 
-        level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockParticle), particlePos.x, particlePos.y, particlePos.z, 0, 0, 0);
+            Vec3 particlePos = hitLocation.add(wielder.getLookAngle().scale(-0.0125f));
+            level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockParticle), particlePos.x, particlePos.y, particlePos.z, 0, 0, 0);
+        } else {
+            Vector3f laserHitPos = hitLocation.toVector3f();
+            if (!laserHitPos.equals(stack.get(ExampleMod.LASER_HIT))) {
+                stack.set(ExampleMod.LASER_HIT, laserHitPos);
+            }
 
-        if (!level.isClientSide && nearestHit instanceof BlockHitResult blockHitResult) {
-            level.destroyBlock(blockHitResult.getBlockPos(), true, wielder);
+            if (nearestHit instanceof BlockHitResult blockHitResult) {
+                level.destroyBlock(blockHitResult.getBlockPos(), true, wielder);
+            }
         }
     }
 
@@ -68,7 +75,7 @@ public class MultitoolItem extends Item {
     public void onStopUsing(ItemStack stack, LivingEntity entity, int count) {
         super.onStopUsing(stack, entity, count);
 
-        stack.set(ExampleMod.LASER_ACTIVE, false);
+        stack.remove(ExampleMod.LASER_HIT);
     }
 
     private HitResult getNearestHit(LivingEntity wielder) {

@@ -25,7 +25,7 @@ public class MultiToolRenderer extends BlockEntityWithoutLevelRenderer {
     @Override
     public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
         if (!ALLOWED_TRANSFORMS.contains(displayContext)) return;
-        if (!stack.getOrDefault(ExampleMod.LASER_ACTIVE, false)) return;
+        if (!stack.has(ExampleMod.LASER_HIT)) return;
 
         poseStack.pushPose();
 

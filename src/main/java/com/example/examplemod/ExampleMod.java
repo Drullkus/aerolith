@@ -1,9 +1,10 @@
 package com.example.examplemod;
 
-import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.registries.*;
+import org.joml.Vector3f;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -60,7 +61,7 @@ public class ExampleMod {
                 output.accept(EXAMPLE_ITEM.get());// Add the example item to the tab. For your own tabs, this method is preferred over the event
             }).build());
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> LASER_ACTIVE = DATA_COMPONENTS.register("laser_active", () -> DataComponentType.<Boolean>builder().persistent(Codec.BOOL.orElse(false)).networkSynchronized(ByteBufCodecs.BOOL).build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Vector3f>> LASER_HIT = DATA_COMPONENTS.register("laser_hit", () -> DataComponentType.<Vector3f>builder().persistent(ExtraCodecs.VECTOR3F).networkSynchronized(ByteBufCodecs.VECTOR3F).build());
 
     // The constructor for the mod class is the first code that is run when your mod is loaded.
     // FML will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
